@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Onboarding Materials</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap");
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #0f1117;
+        --surface: #161b27;
+        --surface2: #1e2535;
+        --border: #2a3347;
+        --blue: #4f8ef7;
+        --blue-dim: #1e3a6e;
+        --green: #3dd68c;
+        --green-dim: #0f3d25;
+        --amber: #f5a623;
+        --amber-dim: #3d2a08;
+        --red: #f25757;
+        --red-dim: #3d1515;
+        --purple: #a78bfa;
+        --purple-dim: #2d1f5e;
+        --text: #e2e8f0;
+        --text-muted: #64748b;
+        --text-dim: #94a3b8;
+        --mono: "DM Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        --sans: "DM Sans", system-ui, sans-serif;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 28px;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+      }
+
+      .brand {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .brand-logo {
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--blue);
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .brand-sub {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 2px;
+      }
+
+      .progress-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .prog-label {
+        font-size: 11px;
+        color: var(--text-muted);
+        font-family: var(--mono);
+      }
+
+      .prog-track {
+        width: 120px;
+        height: 4px;
+        background: var(--border);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+
+      .prog-fill {
+        height: 100%;
+        background: var(--blue);
+        border-radius: 2px;
+      }
+
+      .container {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 40px 28px 64px;
+      }
+
+      .hero {
+        margin-bottom: 32px;
+      }
+
+      .breadcrumb {
+        font-size: 12px;
+        color: var(--text-muted);
+        font-family: var(--mono);
+        margin-bottom: 14px;
+      }
+
+      .breadcrumb span {
+        color: var(--text-dim);
+      }
+
+      .hero-title {
+        font-size: 28px;
+        font-weight: 500;
+        color: var(--text);
+        margin-bottom: 8px;
+      }
+
+      .hero-desc {
+        font-size: 14px;
+        color: var(--text-dim);
+        line-height: 1.65;
+        max-width: 640px;
+      }
+
+      .hero-desc code {
+        font-family: var(--mono);
+        color: var(--purple);
+        background: var(--surface);
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 12.5px;
+      }
+
+      .section-label {
+        font-size: 10px;
+        font-weight: 500;
+        color: var(--text-muted);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin: 28px 0 12px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 16px;
+      }
+
+      .track {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        transition: border-color 0.15s, transform 0.15s;
+      }
+
+      a.track:hover {
+        border-color: var(--blue);
+        transform: translateY(-1px);
+      }
+
+      .track.locked {
+        opacity: 0.7;
+      }
+
+      .track-header {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .lang-badge {
+        font-size: 10px;
+        font-weight: 500;
+        padding: 2px 7px;
+        border-radius: 4px;
+        background: var(--blue-dim);
+        color: var(--blue);
+        font-family: var(--mono);
+      }
+
+      .lang-badge.amber {
+        background: var(--amber-dim);
+        color: var(--amber);
+      }
+
+      .lang-badge.green {
+        background: var(--green-dim);
+        color: var(--green);
+      }
+
+      .lang-badge.purple {
+        background: var(--purple-dim);
+        color: var(--purple);
+      }
+
+      .lang-badge.red {
+        background: var(--red-dim);
+        color: var(--red);
+      }
+
+      .track-title {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text);
+      }
+
+      .status-badge {
+        margin-left: auto;
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 10px;
+        background: var(--surface2);
+        color: var(--text-muted);
+        font-family: var(--mono);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .status-badge .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--text-muted);
+      }
+
+      .status-badge.ready {
+        background: var(--green-dim);
+        color: var(--green);
+      }
+
+      .status-badge.ready .dot {
+        background: var(--green);
+      }
+
+      .track-body {
+        padding: 14px 16px;
+        font-size: 13px;
+        color: var(--text-dim);
+        line-height: 1.65;
+        flex: 1;
+      }
+
+      .track-body code {
+        font-family: var(--mono);
+        color: var(--purple);
+        background: var(--bg);
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 12.5px;
+      }
+
+      .track-footer {
+        padding: 10px 16px;
+        border-top: 1px solid var(--border);
+        background: var(--surface2);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+
+      .track-footer .arrow {
+        color: var(--text-dim);
+      }
+
+      a.track:hover .arrow {
+        color: var(--blue);
+      }
+
+      .footnote {
+        margin-top: 32px;
+        padding: 12px 14px;
+        background: var(--blue-dim);
+        border: 1px solid var(--blue);
+        border-radius: 8px;
+        font-size: 13px;
+        color: var(--text-dim);
+        line-height: 1.6;
+        display: flex;
+        gap: 10px;
+      }
+
+      .footnote-icon {
+        color: var(--blue);
+        flex-shrink: 0;
+        margin-top: 1px;
+        font-weight: 500;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-logo">Onboarding</div>
+        <div class="brand-sub">internship learning tracks</div>
+      </div>
+      <div class="progress-wrap">
+        <div class="prog-label">1 / 6 available</div>
+        <div class="prog-track">
+          <div class="prog-fill" style="width: 16.6%"></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <div class="breadcrumb">home <span>›</span> <span>tracks</span></div>
+        <h1 class="hero-title">Pick a learning track</h1>
+        <p class="hero-desc">
+          Self-paced fundamentals to get you ready for the stack we use day to day.
+          Start with <code>TypeScript</code> — more tracks come online soon.
+        </p>
+      </section>
+
+      <div class="section-label">Available now</div>
+      <div class="grid">
+        <a class="track" href="./typescript_fundamentals.html">
+          <div class="track-header">
+            <span class="lang-badge">TS</span>
+            <div class="track-title">TypeScript fundamentals</div>
+            <div class="status-badge ready"><span class="dot"></span>ready</div>
+          </div>
+          <div class="track-body">
+            Types, interfaces, generics, classes, async, and a NestJS decorators
+            preview. 19 hands-on exercises with inline checks and hints.
+          </div>
+          <div class="track-footer">
+            <span>7 lessons · 19 exercises</span>
+            <span class="arrow">open →</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="section-label">Coming soon</div>
+      <div class="grid">
+        <div class="track locked">
+          <div class="track-header">
+            <span class="lang-badge green">JS</span>
+            <div class="track-title">Express</div>
+            <div class="status-badge"><span class="dot"></span>soon</div>
+          </div>
+          <div class="track-body">
+            Routing, middleware, error handling, and structuring a typed
+            <code>Express</code> API end to end.
+          </div>
+          <div class="track-footer">
+            <span>track in progress</span>
+            <span class="arrow">—</span>
+          </div>
+        </div>
+
+        <div class="track locked">
+          <div class="track-header">
+            <span class="lang-badge green">JS</span>
+            <div class="track-title">Fastify</div>
+            <div class="status-badge"><span class="dot"></span>soon</div>
+          </div>
+          <div class="track-body">
+            Schema-first routes, plugins, hooks, and squeezing the most out of a
+            <code>Fastify</code> service.
+          </div>
+          <div class="track-footer">
+            <span>track in progress</span>
+            <span class="arrow">—</span>
+          </div>
+        </div>
+
+        <div class="track locked">
+          <div class="track-header">
+            <span class="lang-badge purple">PHP</span>
+            <div class="track-title">PHP &amp; Laravel</div>
+            <div class="status-badge"><span class="dot"></span>soon</div>
+          </div>
+          <div class="track-body">
+            PHP basics, then Laravel: routing, Eloquent, controllers, and
+            building a clean <code>artisan</code> workflow.
+          </div>
+          <div class="track-footer">
+            <span>track in progress</span>
+            <span class="arrow">—</span>
+          </div>
+        </div>
+
+        <div class="track locked">
+          <div class="track-header">
+            <span class="lang-badge">N</span>
+            <div class="track-title">Next.js</div>
+            <div class="status-badge"><span class="dot"></span>soon</div>
+          </div>
+          <div class="track-body">
+            App router, server components, server actions, and shipping a
+            production <code>Next.js</code> app.
+          </div>
+          <div class="track-footer">
+            <span>track in progress</span>
+            <span class="arrow">—</span>
+          </div>
+        </div>
+
+        <div class="track locked">
+          <div class="track-header">
+            <span class="lang-badge amber">EX</span>
+            <div class="track-title">Expo</div>
+            <div class="status-badge"><span class="dot"></span>soon</div>
+          </div>
+          <div class="track-body">
+            React Native with Expo: navigation, native modules, and shipping
+            mobile builds with <code>eas</code>.
+          </div>
+          <div class="track-footer">
+            <span>track in progress</span>
+            <span class="arrow">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footnote">
+        <div class="footnote-icon">i</div>
+        <div>
+          New tracks will appear here as they come online. Tip: complete
+          TypeScript first — every other track on this list builds on it.
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
