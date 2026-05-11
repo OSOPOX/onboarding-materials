@@ -1,0 +1,1799 @@
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap");
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --bg: #0f1117;
+    --surface: #161b27;
+    --surface2: #1e2535;
+    --border: #2a3347;
+    --blue: #4f8ef7;
+    --blue-dim: #1e3a6e;
+    --green: #3dd68c;
+    --green-dim: #0f3d25;
+    --amber: #f5a623;
+    --amber-dim: #3d2a08;
+    --red: #f25757;
+    --red-dim: #3d1515;
+    --purple: #a78bfa;
+    --purple-dim: #2d1f5e;
+    --text: #e2e8f0;
+    --text-muted: #64748b;
+    --text-dim: #94a3b8;
+    --mono: "DM Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: "DM Sans", system-ui, sans-serif;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    overflow: hidden;
+  }
+
+  .shell {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    height: 100vh;
+  }
+
+  .sidebar {
+    overflow-y: auto;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+  }
+
+  .sidebar-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-logo {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--blue);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .sidebar-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .home-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-top: 8px;
+    transition: color 0.15s;
+  }
+
+  .home-link:hover {
+    color: var(--blue);
+  }
+
+  .chapter {
+    padding: 6px 0;
+  }
+
+  .chapter-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 10px 16px 4px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-dim);
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+  }
+
+  .nav-item:hover {
+    color: var(--text);
+    background: var(--surface2);
+  }
+
+  .nav-item.active {
+    color: var(--blue);
+    border-left-color: var(--blue);
+    background: var(--blue-dim);
+  }
+
+  .nav-item .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+
+  .nav-item.done .dot {
+    background: var(--green);
+  }
+
+  .nav-item.active .dot {
+    background: var(--blue);
+  }
+
+  .nav-badge {
+    margin-left: auto;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    background: var(--surface2);
+    color: var(--text-muted);
+    font-family: var(--mono);
+  }
+
+  .main {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .breadcrumb {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: var(--mono);
+  }
+
+  .breadcrumb span {
+    color: var(--text-dim);
+  }
+
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .prog-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--mono);
+  }
+
+  .prog-track {
+    width: 100px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .prog-fill {
+    height: 100%;
+    background: var(--blue);
+    border-radius: 2px;
+    transition: width 0.4s;
+  }
+
+  .content {
+    padding: 24px 28px;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    min-height: 0;
+  }
+
+  .lesson {
+    display: none;
+  }
+
+  .lesson.active {
+    display: block;
+  }
+
+  .lesson-title {
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .lesson-desc {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.65;
+    margin-bottom: 22px;
+  }
+
+  .lesson-desc code {
+    font-family: var(--mono);
+    color: var(--purple);
+    background: var(--surface);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12.5px;
+  }
+
+  .concept {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 18px;
+    overflow: hidden;
+  }
+
+  .concept-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .concept-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .lang-badge {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: var(--green-dim);
+    color: var(--green);
+    font-family: var(--mono);
+  }
+
+  pre.code-block {
+    margin: 0;
+    padding: 16px 18px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text);
+    background: var(--bg);
+    overflow-x: auto;
+    white-space: pre;
+    tab-size: 2;
+  }
+
+  .tok-kw { color: #c792ea; }
+  .tok-ty { color: #82aaff; }
+  .tok-str { color: #c3e88d; }
+  .tok-num { color: #f78c6c; }
+  .tok-cm { color: #546e7a; font-style: italic; }
+  .tok-fn { color: #82aaff; }
+  .tok-dec { color: #ffcb6b; }
+  .tok-iface { color: #ffcb6b; }
+  .tok-bool { color: #c792ea; }
+
+  .note {
+    background: var(--blue-dim);
+    border: 1px solid var(--blue);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin-bottom: 18px;
+    display: flex;
+    gap: 10px;
+  }
+
+  .note code {
+    font-family: var(--mono);
+    color: var(--text);
+    background: rgba(0, 0, 0, 0.25);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12.5px;
+  }
+
+  .note-icon {
+    color: var(--blue);
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-weight: 500;
+  }
+
+  .note.warn {
+    background: var(--amber-dim);
+    border-color: var(--amber);
+  }
+
+  .note.warn .note-icon {
+    color: var(--amber);
+  }
+
+  .exercise {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 18px;
+    overflow: hidden;
+  }
+
+  .ex-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .ex-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .ex-badge {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-weight: 500;
+  }
+
+  .ex-badge.easy { background: var(--green-dim); color: var(--green); }
+  .ex-badge.medium { background: var(--amber-dim); color: var(--amber); }
+  .ex-badge.hard { background: var(--red-dim); color: var(--red); }
+
+  .ex-body { padding: 14px 16px; }
+
+  .ex-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.65;
+    margin-bottom: 12px;
+  }
+
+  .ex-desc code {
+    font-family: var(--mono);
+    color: var(--purple);
+    background: var(--bg);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12.5px;
+  }
+
+  .ex-task {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  .ex-task strong {
+    color: var(--amber);
+    font-weight: 500;
+  }
+
+  .ex-task code {
+    font-family: var(--mono);
+    color: var(--amber);
+  }
+
+  .editor {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .editor-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--mono);
+    background: var(--surface2);
+  }
+
+  .editor-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  textarea.code-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 14px;
+    resize: vertical;
+    min-height: 100px;
+    tab-size: 2;
+  }
+
+  .ex-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: var(--sans);
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+
+  .btn-run { background: var(--blue); color: #fff; }
+  .btn-run:hover { background: #3a7ef5; }
+
+  .btn-hint,
+  .btn-reset {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+
+  .btn-hint:hover { border-color: var(--amber); color: var(--amber); }
+  .btn-reset:hover { border-color: var(--red); color: var(--red); }
+
+  .result {
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.6;
+    display: none;
+    border-top: 1px solid var(--border);
+  }
+
+  .result.pass { background: var(--green-dim); color: var(--green); display: block; }
+  .result.fail { background: var(--red-dim); color: var(--red); display: block; }
+  .result.hint-shown { background: var(--amber-dim); color: var(--amber); display: block; }
+
+  .nav-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 28px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .btn-nav {
+    padding: 8px 18px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: var(--sans);
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-nav:hover { border-color: var(--blue); color: var(--blue); }
+  .btn-nav.primary { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .btn-nav.primary:hover { background: #3a7ef5; }
+  .btn-nav:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .lesson-count {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: var(--mono);
+  }
+</style>
+
+<div class="shell">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">Express Fundamentals</div>
+      <div class="sidebar-sub">node http, the minimal way</div>
+      <a class="home-link" href="./index.html">← all tracks</a>
+    </div>
+    <nav class="chapter">
+      <div class="chapter-label">Core concepts</div>
+      <div class="nav-item active" id="nav-0" onclick="goTo(0)"><span class="dot"></span>First server<span class="nav-badge">2ex</span></div>
+      <div class="nav-item" id="nav-1" onclick="goTo(1)"><span class="dot"></span>Routing<span class="nav-badge">3ex</span></div>
+      <div class="nav-item" id="nav-2" onclick="goTo(2)"><span class="dot"></span>Middleware<span class="nav-badge">3ex</span></div>
+      <div class="nav-item" id="nav-3" onclick="goTo(3)"><span class="dot"></span>Request &amp; response<span class="nav-badge">3ex</span></div>
+      <div class="nav-item" id="nav-4" onclick="goTo(4)"><span class="dot"></span>Body &amp; validation<span class="nav-badge">2ex</span></div>
+      <div class="nav-item" id="nav-5" onclick="goTo(5)"><span class="dot"></span>Router &amp; modules<span class="nav-badge">2ex</span></div>
+      <div class="nav-item" id="nav-6" onclick="goTo(6)"><span class="dot"></span>Error handling<span class="nav-badge">2ex</span></div>
+    </nav>
+    <nav class="chapter">
+      <div class="chapter-label">NestJS bridge</div>
+      <div class="nav-item" id="nav-7" onclick="goTo(7)"><span class="dot"></span>Controllers &amp; services<span class="nav-badge">2ex</span></div>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="breadcrumb">express <span>›</span> <span id="bc-title">first server</span></div>
+      <div class="progress-wrap">
+        <div class="prog-label" id="prog-label">0 / 19 done</div>
+        <div class="prog-track">
+          <div class="prog-fill" id="prog-fill" style="width: 0%"></div>
+        </div>
+      </div>
+    </header>
+
+    <section class="content">
+
+      <!-- ====================================================== -->
+      <!-- LESSON 0 — First server                                 -->
+      <!-- ====================================================== -->
+      <div class="lesson active" id="lesson-0">
+        <h2 class="lesson-title">Your first server</h2>
+        <p class="lesson-desc">Express is a minimal HTTP framework for Node.js. You create an <code>app</code>, attach
+          routes, and call <code>listen</code>. That's it — everything else is layered on top of those three steps.</p>
+
+        <div class="concept">
+          <div class="concept-header"><span class="lang-badge">TS</span>
+            <div class="concept-title">Hello world</div>
+          </div>
+          <pre class="code-block">import express from "express";
+
+const app = express();
+
+app.get("/", (req, res) =&gt; {
+  res.send("Hello, world!");
+});
+
+const PORT = process.env.PORT ?? 3000;
+app.listen(PORT, () =&gt; {
+  console.log(`Listening on http://localhost:${PORT}`);
+});</pre>
+        </div>
+
+        <div class="concept">
+          <div class="concept-header"><span class="lang-badge">TS</span>
+            <div class="concept-title">send vs json vs status</div>
+          </div>
+          <pre class="code-block">app.get("/text", (req, res) =&gt; res.send("plain text"));
+
+// Sets Content-Type: application/json automatically
+app.get("/json", (req, res) =&gt; res.json({ ok: true }));
+
+// Chain status before the body
+app.get("/created", (req, res) =&gt; res.status(201).json({ created: true }));
+
+// No body, just a status
+app.get("/empty", (req, res) =&gt; res.status(204).end());</pre>
+        </div>
+
+        <div class="note">
+          <div class="note-icon">i</div>
+          <div>Always call exactly one terminal method (<code>res.send</code>, <code>res.json</code>,
+            <code>res.end</code>, <code>res.redirect</code>) per request. Calling two will throw
+            <code>Cannot set headers after they are sent</code>.</div>
+        </div>
+
+        <div class="exercise" id="ex-0-0">
+          <div class="ex-header">
+            <div class="ex-title"><span class="ex-badge easy">easy</span>Exercise 1 — Minimal server</div>
+          </div>
+          <div class="ex-body">
+            <p class="ex-desc">Build a minimal Express app that responds with <code>"Hello, Express!"</code> on
+              <code>GET /</code> and starts listening on port <code>3000</code>.</p>
+            <p class="ex-task"><strong>Task:</strong> use <code>express()</code>, <code>app.get</code>, and
+              <code>app.listen</code>.</p>
+            <div class="editor">
+              <div class="editor-tab"><span class="editor-dot" style="background: #f25757"></span><span
+                  class="editor-dot" style="background: #f5a623"></span><span class="editor-dot"
+                  style="background: #3dd68c"></span>&nbsp;exercise-1.ts</div>
+              <textarea class="code-input" id="code-0-0" spellcheck="false" rows="7">import express from "express";
+
+const app = express();
+
+// your code here
+
+app.listen(/* port */);</textarea>
+            </div>
+            <div class="ex-actions">
+              <button class="btn btn-run" onclick="check(0,0)">Run check</button>
+              <button class="btn btn-hint" onclick="hint(0,0)">Hint</button>
+              <button class="btn btn-reset" onclick="resetEx(0,0)">Reset</button>
+            </div>
+            <div class="result" id="result-0-0"></div>
+          </div>
+        </div>
+
+        <div class="exercise" id="ex-0-1">
+          <div class="ex-header">
+            <div class="ex-title"><span class="ex-badge easy">easy</span>Exercise 2 — JSON status route</div>
+          </div>
+          <div class="ex-body">
+            <p class="ex-desc">Add a route <code>GET /status</code> that returns JSON <code>{ ok: true }</code> with the
+              default 200 status, and a route <code>GET /teapot</code> that returns status <code>418</code> with JSON
+              <code>{ error: "I'm a teapot" }</code>.</p>
+            <div class="editor">
+              <div class="editor-tab"><span class="editor-dot" style="background: #f25757"></span><span
+                  class="editor-dot" style="background: #f5a623"></span><span class="editor-dot"
+                  style="background: #3dd68c"></span>&nbsp;exercise-2.ts</div>
+              <textarea class="code-input" id="code-0-1" spellcheck="false" rows="5">// /status -&gt; 200 { ok: true }
+// /teapot -&gt; 418 { error: "I'm a teapot" }
+
+// your routes here</textarea>
+            </div>
+            <div class="ex-actions">
+              <button class="btn btn-run" onclick="check(0,1)">Run check</button>
+              <button class="btn btn-hint" onclick="hint(0,1)">Hint</button>
+              <button class="btn btn-reset" onclick="resetEx(0,1)">Reset</button>
+            </div>
+            <div class="result" id="result-0-1"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================== -->
+      <!-- LESSON 1 — Routing                                      -->
+      <!-- ====================================================== -->
+      <div class="lesson" id="lesson-1">
+        <h2 class="lesson-title">Routing</h2>
+        <p class="lesson-desc">A route is an HTTP method plus a path plus a handler. Express supports the standard verbs
+          (<code>get</code>, <code>post</code>, <code>put</code>, <code>patch</code>, <code>delete</code>), dynamic URL
+          segments with <code>:param</code>, and a parsed query string on <code>req.query</code>.</p>
+
+        <div class="concept">
+          <div class="concept-header"><span class="lang-badge">TS</span>
+            <div class="concept-title">HTTP methods</div>
+          </div>
+          <pre class="code-block">app.get("/users", (req, res) =&gt; res.json([]));
+app.post("/users", (req, res) =&gt; res.status(201).json({ id: 1 }));
+app.put("/users/:id", (req, res) =&gt; res.json({ id: req.params.id }));
+app.patch("/users/:id", (req, res) =&gt; res.json({ id: req.params.id }));
+app.delete("/users/:id", (req, res) =&gt; res.status(204).end());</pre>
+        </div>
+
+        <div class="concept">
+          <div class="concept-header"><span class="lang-badge">TS</span>
+            <div class="concept-title">Route params &amp; query strings</div>
+          </div>
+          <pre class="code-block">// URL: /users/42
+app.get("/users/:id", (req, res) =&gt; {
+  const id = req.params.id;       // "42" — always a string
+  res.json({ id: Number(id) });
+});
+
+// URL: /search?q=express&amp;limit=10
+app.get("/search", (req, res) =&gt; {
+  const q = req.query.q;          // "express"
+  const limit = req.query.limit;  // "10"
+  res.json({ q, limit });
+});</pre>
+        </div>
+
+        <div class="note warn">
+          <div class="note-icon">!</div>
+          <div>Route params and query values arrive as strings (or arrays/objects for repeated query keys). If you
+            need a number, coerce it with <code>Number()</code> and validate before using.</div>
+        </div>
+
+        <div class="exercise" id="ex-1-0">
+          <div class="ex-header">
+            <div class="ex-title"><span class="ex-badge easy">easy</span>Exercise 1 — Two methods, one resource</div>
+          </div>
+          <div class="ex-body">
+            <p class="ex-desc">Add <code>GET /products</code> that returns <code>[]</code> as JSON and
+              <code>POST /products</code> that returns <code>{ id: 1 }</code> with status <code>201</code>.</p>
+            <div class="editor">
+              <div class="editor-tab"><span class="editor-dot" style="background: #f25757"></span><span
+                  class="editor-dot" style="background: #f5a623"></span><span class="editor-dot"
+                  style="background: #3dd68c"></span>&nbsp;exercise-1.ts</div>
+              <textarea class="code-input" id="code-1-0" spellcheck="false" rows="4">// your routes here</textarea>
+            </div>
+            <div class="ex-actions">
+              <button class="btn btn-run" onclick="check(1,0)">Run check</button>
+              <button class="btn btn-hint" onclick="hint(1,0)">Hint</button>
+              <button class="btn btn-reset" onclick="resetEx(1,0)">Reset</button>
+            </div>
+            <div class="result" id="result-1-0"></div>
+          </div>
+        </div>
+
+        <div class="exercise" id="ex-1-1">
+          <div class="ex-header">
+            <div class="ex-title"><span class="ex-badge medium">medium</span>Exercise 2 — Route param coercion</div>
+          </div>
+          <div class="ex-body">
+            <p class="ex-desc">Build <code>GET /orders/:id</code> that returns <code>{ orderId: &lt;number&gt; }</code>.
+              The <code>id</code> must be coerced to a <code>number</code>.</p>
+            <div class="editor">
+              <div class="editor-tab"><span class="editor-dot" style="background: #f25757"></span><span
+                  class="editor-dot" style="background: #f5a623"></span><span class="editor-dot"
+                  style="background: #3dd68c"></span>&nbsp;exercise-2.ts</div>
+              <textarea class="code-input" id="code-1-1" spellcheck="false" rows="4">app.get("/orders/:id", (req, res) =&gt; {
+  // your code here
+});</textarea>
+            </div>
+            <div class="ex-actions">
+              <button class="btn btn-run" onclick="check(1,1)">Run check</button>
+              <button class="btn btn-hint" onclick="hint(1,1)">Hint</button>
+              <button class="btn btn-reset" onclick="resetEx(1,1)">Reset</button>
+            </div>
+            <div class="result" id="result-1-1"></div>
+          </div>
+        </div>
+
+        <div class="exercise" id="ex-1-2">
+          <div class="ex-header">
+            <div class="ex-title"><span class="ex-badge medium">medium</span>Exercise 3 — Query string with validation</div>
+          </div>
+          <div class="ex-body">
+            <p class="ex-desc">Build <code>GET /search</code> that reads <code>req.query.q</code> and returns
+              <code>{ q, results: [] }</code>. If <code>q</code> is missing or empty, return status <code>400</code> with
+              <code>{ error: "q required" }</code>.</p>
+            <div class="editor">
+              <div class="editor-tab"><span class="editor-dot" style="background: #f25757"></span><span
+                  class="editor-dot" style="background: #f5a623"></span><span class="editor-dot"
+                  style="background: #3dd68c"></span>&nbsp;exercise-3.ts</div>
+              <textarea class="code-input" id="code-1-2" spellcheck="false" rows="6">app.get("/search", (req, res) =&gt; {
+  // your code here
+});</textarea>
+            </div>
+            <div class="ex-actions">
+              <button class="btn btn-run" onclick="check(1,2)">Run check</button>
+              <button class="btn btn-hint" onclick="hint(1,2)">Hint</button>
+              <button class="btn btn-reset" onclick="resetEx(1,2)">Reset</button>
+            </div>
+            <div class="result" id="result-1-2"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================== -->
+      <!-- LESSON 2 — Middleware                                   -->
+      <!-- ====================================================== -->
+      <div class="lesson" id="lesson-2">
+        <h2 class="lesson-title">Middleware</h2>
+        <p class="lesson-desc">A middleware is just a function <code>(req, res, next) =&gt; void</code> that runs in the
+          order it was registered. Call <code>next()</code> to pass control to the next middleware, or send a response
+          to end the chain.</p>
+
+        <div class="concept">
+          <div class="concept-header"><span class="lang-badge">TS</span>
+            <div class="concept-title">Custom middleware</div>
+          </div>
+          <pre class="code-block">function logger(req, res, next) {
+  console.log(`${req.method} ${req.url}`);
+  next();
+}
+
+app.use(logger);</pre>
+        </div>
+
+        <div class="concept">
+          <div class="concept-header"><span class="lang-badge">TS</span>
+            <div class="concept-title">Built-in &amp; path-scoped middleware</div>
+          </div>
+          <pre class="code-block">// Built-in: parses application/json into req.body
+app.use(express.json());
+
+// Path-scoped: only runs for routes starting with /admin
+app.use("/admin", requireAdmin);
+
+app.get("/admin/dashboard", (req, res) =&gt; res.json({ ok: true }));</pre>
+        </div>
+
+        <div class="concept">
+          <div class="concept-header"><span class="lang-badge">TS</span>
+            <div class="concept-title">Error-handling middleware</div>
+          </div>
+          <pre class="code-block">// 4 args — that's how Express recognizes error middleware
+function errorHandler(err, req, res, next) {
+  console.error(err);
+  res.status(err.status ?? 500).json({ error: err.message });
+}
+
+app.use(errorHandler); // register last</pre>
+        </div>
+
+        <div class="note">
+          <div class="note-icon">i</div>
+          <div>Order matters. <code>express.json()</code> must come before any route that reads <code>req.body</code>.
+            Error handlers must come <em>after</em> all routes.</div>
+        </div>
+
+        <div class="exercise" id="ex-2-0">
+          <div class="ex-header">
+            <div class="ex-title"><span class="ex-badge easy">easy</span>Exercise 1 — Logging middleware</div>
+          </div>
+          <div class="ex-body">
+            <p class="ex-desc">Write a middleware <code>requestLogger</code> that logs <code>&lt;method&gt; &lt;url&gt;</code>
+              and then calls <code>next()</code>.</p>
+            <div class="editor">
+              <div class="editor-tab"><span class="editor-dot" style="background: #f25757"></span><span
+                  class="editor-dot" style="background: #f5a623"></span><span class="editor-dot"
+                  style="background: #3dd68c"></span>&nbsp;exercise-1.ts</div>
+              <textarea class="code-input" id="code-2-0" spellcheck="false" rows="4">function requestLogger(req, res, next) {
+  // your code here
+}</textarea>
+            </div>
+            <div class="ex-actions">
+              <button class="btn btn-run" onclick="check(2,0)">Run check</button>
+              <button class="btn btn-hint" onclick="hint(2,0)">Hint</button>
+              <button class="btn btn-reset" onclick="resetEx(2,0)">Reset</button>
+            </div>
+            <div class="result" id="result-2-0"></div>
+          </div>
+        </div>
+
+        <div class="exercise" id="ex-2-1">
+          <div class="ex-header">
+            <div class="ex-title"><span class="ex-badge medium">medium</span>Exercise 2 — Path-scoped middleware</div>
+          </div>
+          <div class="ex-body">
+            <p class="ex-desc">Apply the middleware <code>auth</code> only to routes starting with <code>/admin</code>.
+              Then add a route <code>GET /admin/dashboard</code> returning <code>{ ok: true }</code>.</p>
+            <div class="editor">
+              <div class="editor-tab"><span class="editor-dot" style="background: #f25757"></span><span
+                  class="editor-dot" style="background: #f5a623"></span><span class="editor-dot"
+                  style="background: #3dd68c"></span>&nbsp;exercise-2.ts</div>
+              <textarea class="code-input" id="code-2-1" spellcheck="false" rows="6">function auth(req, res, next) { next(); }
+
+// mount auth on /admin and add the route below</textarea>
+            </div>
+            <div class="ex-actions">
+              <button class="btn btn-run" onclick="check(2,1)">Run check</button>
+              <button class="btn btn-hint" onclick="hint(2,1)">Hint</button>
+              <button class="btn btn-reset" onclick="resetEx(2,1)">Reset</button>
+            </div>
+            <div class="result" id="result-2-1"></div>
+          </div>
+        </div>
+
+        <div class="exercise" id="ex-2-2">
+          <div class="ex-header">
+            <div class="ex-title"><span class="ex-badge hard">hard</span>Exercise 3 — Error middleware</div>
+          </div>
+          <div class="ex-body">
+            <p class="ex-desc">Write an Express error handler <code>errorHandler</code> that responds with
+              <code>{ message }</code> and uses <code>err.status</code> if present, otherwise <code>500</code>.</p>
+            <div class="editor">
+              <div class="editor-tab"><span class="editor-dot" style="background: #f25757"></span><span
+                  class="editor-dot" style="background: #f5a623"></span><span class="editor-dot"
+                  style="background: #3dd68c"></span>&nbsp;exercise-3.ts</div>
+              <textarea class="code-input" id="code-2-2" spellcheck="false" rows="4">function errorHandler(err, req, res, next) {
+  // your code here
+}</textarea>
+            </div>
+            <div class="ex-actions">
+              <button class="btn btn-run" onclick="check(2,2)">Run check</button>
+              <button class="btn btn-hint" onclick="hint(2,2)">Hint</button>
+              <button class="btn btn-reset" onclick="resetEx(2,2)">Reset</button>
+            </div>
+            <div class="result" id="result-2-2"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================== -->
+      <!-- LESSON 3 — Request & response                           -->
+      <!-- ====================================================== -->
+      <div class="lesson" id="lesson-3">
+        <h2 class="lesson-title">Request &amp; response</h2>
+        <p class="lesson-desc"><code>req</code> and <code>res</code> have lots of helpers. Mastering
+          <code>req.body</code> / <code>req.params</code> / <code>req.query</code> and
+          <code>res.status</code> / <code>res.json</code> / <code>res.send</code> / <code>res.redirect</code> /
+          <code>res.set</code> covers most of what you'll write.</p>
+
+        <div class="concept">
+          <div class="concept-header"><span class="lang-badge">TS</span>
+            <div class="concept-title">Reading inputs from every layer</div>
+          </div>
+          <pre class="code-block">app.post("/orders/:userId", (req, res) =&gt; {
+  const userId = req.params.userId; // URL segment
+  const sort = req.query.sort;      // ?sort=asc
+  const { item, qty } = req.body;   // JSON body (needs express.json())
+  res.json({ userId, sort, item, qty });
+});</pre>
+        </div>
+
+        <div class="concept">
+          <div class="concept-header"><span class="lang-badge">TS</span>
+            <div class="concept-title">Status &amp; response helpers</div>
+          </div>
+          <pre class="code-block">res.status(404).json({ error: "not found" });
+res.status(204).end();              // no content
+res.redirect(301, "/new-url");      // redirect
+res.set("X-Trace", "abc-123");      // set a single header
+res.set({ "Cache-Control": "no-store", "X-App": "onboarding" });</pre>
+        </div>
+
+        <div class="exercise" id="ex-3-0">
+          <div class="ex-header">
+            <div class="ex-title"><span class="ex-badge easy">easy</span>Exercise 1 — Right status codes</div>
+          </div>
+          <div class="ex-body">
+            <p class="ex-desc">Build <code>GET /users/:id</code> that returns status <code>404</code> with
+              <code>{ error: "not found" }</code> when <code>id</code> is <code>"0"</code>, otherwise
+              <code>200</code> with <code>{ id }</code>.</p>
+            <div class="editor">
+              <div class="editor-tab"><span class="editor-dot" style="background: #f25757"></span><span
+                  class="editor-dot" style="background: #f5a623"></span><span class="editor-dot"
+                  style="background: #3dd68c"></span>&nbsp;exercise-1.ts</div>
+              <textarea class="code-input" id="code-3-0" spellcheck="false" rows="6">app.get("/users/:id", (req, res) =&gt; {
+  // your code here
+});</textarea>
+            </div>
+            <div class="ex-actions">
+              <button class="btn btn-run" onclick="check(3,0)">Run check</button>
+              <button class="btn btn-hint" onclick="hint(3,0)">Hint</button>
+              <button class="btn btn-reset" onclick="resetEx(3,0)">Reset</button>
+            </div>
+            <div class="result" id="result-3-0"></div>
+          </div>
+        </div>
+
+        <div class="exercise" id="ex-3-1">
+          <div class="ex-header">
+            <div class="ex-title"><span class="ex-badge medium">medium</span>Exercise 2 — Body + params + query</div>
+          </div>
+          <div class="ex-body">
+            <p class="ex-desc">Build <code>POST /carts/:userId/items?source=web</code> that responds with
+              <code>{ userId, source, item }</code> — each value pulled from <code>req.params</code>,
+              <code>req.query</code>, and <code>req.body</code> respectively.</p>
+            <div class="editor">
+              <div class="editor-tab"><span class="editor-dot" style="background: #f25757"></span><span
+                  class="editor-dot" style="background: #f5a623"></span><span class="editor-dot"
+                  style="background: #3dd68c"></span>&nbsp;exercise-2.ts</div>
+              <textarea class="code-input" id="code-3-1" spellcheck="false" rows="6">app.post("/carts/:userId/items", (req, res) =&gt; {
+  // your code here
+});</textarea>
+            </div>
+            <div class="ex-actions">
+              <button class="btn btn-run" onclick="check(3,1)">Run check</button>
+              <button class="btn btn-hint" onclick="hint(3,1)">Hint</button>
+              <button class="btn btn-reset" onclick="resetEx(3,1)">Reset</button>
+            </div>
+            <div class="result" id="result-3-1"></div>
+          </div>
+        </div>
+
+        <div class="exercise" id="ex-3-2">
+          <div class="ex-header">
+            <div class="ex-title"><span class="ex-badge medium">medium</span>Exercise 3 — Headers &amp; redirect</div>
+          </div>
+          <div class="ex-body">
+            <p class="ex-desc">Add <code>GET /go</code> that sets header <code>X-Redirected: yes</code> and redirects
+              to <code>/</code>.</p>
+            <div class="editor">
+              <div class="editor-tab"><span class="editor-dot" style="background: #f25757"></span><span
+                  class="editor-dot" style="background: #f5a623"></span><span class="editor-dot"
+                  style="background: #3dd68c"></span>&nbsp;exercise-3.ts</div>
+              <textarea class="code-input" id="code-3-2" spellcheck="false" rows="5">app.get("/go", (req, res) =&gt; {
+  // your code here
+});</textarea>
+            </div>
+            <div class="ex-actions">
+              <button class="btn btn-run" onclick="check(3,2)">Run check</button>
+              <button class="btn btn-hint" onclick="hint(3,2)">Hint</button>
+              <button class="btn btn-reset" onclick="resetEx(3,2)">Reset</button>
+            </div>
+            <div class="result" id="result-3-2"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================== -->
+      <!-- LESSON 4 — Body & validation                            -->
+      <!-- ====================================================== -->
+      <div class="lesson" id="lesson-4">
+        <h2 class="lesson-title">Body parsing &amp; validation</h2>
+        <p class="lesson-desc">To read JSON bodies you must register <code>express.json()</code>. Then always validate
+          input before trusting it — the client can send anything.</p>
+
+        <div class="concept">
+          <div class="concept-header"><span class="lang-badge">TS</span>
+            <div class="concept-title">Enable JSON parsing</div>
+          </div>
+          <pre class="code-block">const app = express();
+app.use(express.json()); // required for req.body to populate
+
+app.post("/notes", (req, res) =&gt; {
+  const { title, body } = req.body;
+  res.status(201).json({ title, body });
+});</pre>
+        </div>
+
+        <div class="concept">
+          <div class="concept-header"><span class="lang-badge">TS</span>
+            <div class="concept-title">Manual validation</div>
+          </div>
+          <pre class="code-block">app.post("/users", (req, res) =&gt; {
+  const { email, age } = req.body;
+
+  if (typeof email !== "string" || !email.includes("@")) {
+    return res.status(400).json({ error: "invalid email" });
+  }
+  if (typeof age !== "number" || age &lt; 0) {
+    return res.status(400).json({ error: "invalid age" });
+  }
+
+  res.status(201).json({ email, age });
+});</pre>
+        </div>
+
+        <div class="note">
+          <div class="note-icon">i</div>
+          <div>In production reach for <code>zod</code>, <code>joi</code>, or <code>class-validator</code>. The
+            principle is the same: reject early with a clear <code>400</code> response.</div>
+        </div>
+
+        <div class="exercise" id="ex-4-0">
+          <div class="ex-header">
+            <div class="ex-title"><span class="ex-badge easy">easy</span>Exercise 1 — Enable JSON &amp; echo</div>
+          </div>
+          <div class="ex-body">
+            <p class="ex-desc">Enable JSON parsing and add <code>POST /tasks</code> that returns the parsed body with
+              status <code>201</code>.</p>
+            <div class="editor">
+              <div class="editor-tab"><span class="editor-dot" style="background: #f25757"></span><span
+                  class="editor-dot" style="background: #f5a623"></span><span class="editor-dot"
+                  style="background: #3dd68c"></span>&nbsp;exercise-1.ts</div>
+              <textarea class="code-input" id="code-4-0" spellcheck="false" rows="5">const app = express();
+
+// enable JSON, then add the route</textarea>
+            </div>
+            <div class="ex-actions">
+              <button class="btn btn-run" onclick="check(4,0)">Run check</button>
+              <button class="btn btn-hint" onclick="hint(4,0)">Hint</button>
+              <button class="btn btn-reset" onclick="resetEx(4,0)">Reset</button>
+            </div>
+            <div class="result" id="result-4-0"></div>
+          </div>
+        </div>
+
+        <div class="exercise" id="ex-4-1">
+          <div class="ex-header">
+            <div class="ex-title"><span class="ex-badge medium">medium</span>Exercise 2 — Validate signup</div>
+          </div>
+          <div class="ex-body">
+            <p class="ex-desc">Validate <code>POST /signup</code>: require <code>email</code> (string containing
+              <code>@</code>) and <code>password</code> (string with length <code>&gt;= 8</code>). On failure return
+              <code>400</code> with <code>{ error }</code>. On success return <code>201</code> with
+              <code>{ email }</code>.</p>
+            <div class="editor">
+              <div class="editor-tab"><span class="editor-dot" style="background: #f25757"></span><span
+                  class="editor-dot" style="background: #f5a623"></span><span class="editor-dot"
+                  style="background: #3dd68c"></span>&nbsp;exercise-2.ts</div>
+              <textarea class="code-input" id="code-4-1" spellcheck="false" rows="8">app.post("/signup", (req, res) =&gt; {
+  const { email, password } = req.body;
+  // validate, then respond
+});</textarea>
+            </div>
+            <div class="ex-actions">
+              <button class="btn btn-run" onclick="check(4,1)">Run check</button>
+              <button class="btn btn-hint" onclick="hint(4,1)">Hint</button>
+              <button class="btn btn-reset" onclick="resetEx(4,1)">Reset</button>
+            </div>
+            <div class="result" id="result-4-1"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================== -->
+      <!-- LESSON 5 — Router & modules                             -->
+      <!-- ====================================================== -->
+      <div class="lesson" id="lesson-5">
+        <h2 class="lesson-title">Router &amp; modularization</h2>
+        <p class="lesson-desc">Don't put every route in one file. <code>express.Router()</code> lets you group routes
+          by resource and mount them under a path prefix — the same idea NestJS expresses with controllers.</p>
+
+        <div class="concept">
+          <div class="concept-header"><span class="lang-badge">TS</span>
+            <div class="concept-title">Build a router</div>
+          </div>
+          <pre class="code-block">// users.routes.ts
+import { Router } from "express";
+
+const router = Router();
+
+router.get("/", (req, res) =&gt; res.json([]));
+router.get("/:id", (req, res) =&gt; res.json({ id: req.params.id }));
+router.post("/", (req, res) =&gt; res.status(201).json({ created: true }));
+
+export default router;</pre>
+        </div>
+
+        <div class="concept">
+          <div class="concept-header"><span class="lang-badge">TS</span>
+            <div class="concept-title">Mount the router</div>
+          </div>
+          <pre class="code-block">// app.ts
+import express from "express";
+import usersRouter from "./users.routes";
+
+const app = express();
+app.use(express.json());
+app.use("/api/users", usersRouter);
+
+// GET    /api/users
+// GET    /api/users/:id
+// POST   /api/users</pre>
+        </div>
+
+        <div class="exercise" id="ex-5-0">
+          <div class="ex-header">
+            <div class="ex-title"><span class="ex-badge medium">medium</span>Exercise 1 — Products router</div>
+          </div>
+          <div class="ex-body">
+            <p class="ex-desc">Create a router <code>productsRouter</code> with three routes: <code>GET /</code> (list,
+              returns <code>[]</code>), <code>GET /:id</code> (returns <code>{ id }</code>), and <code>POST /</code>
+              (returns status <code>201</code> with <code>{ created: true }</code>).</p>
+            <div class="editor">
+              <div class="editor-tab"><span class="editor-dot" style="background: #f25757"></span><span
+                  class="editor-dot" style="background: #f5a623"></span><span class="editor-dot"
+                  style="background: #3dd68c"></span>&nbsp;products.routes.ts</div>
+              <textarea class="code-input" id="code-5-0" spellcheck="false" rows="8">import { Router } from "express";
+
+const productsRouter = Router();
+
+// your routes here
+
+export default productsRouter;</textarea>
+            </div>
+            <div class="ex-actions">
+              <button class="btn btn-run" onclick="check(5,0)">Run check</button>
+              <button class="btn btn-hint" onclick="hint(5,0)">Hint</button>
+              <button class="btn btn-reset" onclick="resetEx(5,0)">Reset</button>
+            </div>
+            <div class="result" id="result-5-0"></div>
+          </div>
+        </div>
+
+        <div class="exercise" id="ex-5-1">
+          <div class="ex-header">
+            <div class="ex-title"><span class="ex-badge medium">medium</span>Exercise 2 — Mount the router</div>
+          </div>
+          <div class="ex-body">
+            <p class="ex-desc">In <code>app.ts</code>, enable JSON parsing and mount <code>productsRouter</code> at
+              <code>/api/products</code>.</p>
+            <div class="editor">
+              <div class="editor-tab"><span class="editor-dot" style="background: #f25757"></span><span
+                  class="editor-dot" style="background: #f5a623"></span><span class="editor-dot"
+                  style="background: #3dd68c"></span>&nbsp;app.ts</div>
+              <textarea class="code-input" id="code-5-1" spellcheck="false" rows="6">import express from "express";
+import productsRouter from "./products.routes";
+
+const app = express();
+
+// your code here</textarea>
+            </div>
+            <div class="ex-actions">
+              <button class="btn btn-run" onclick="check(5,1)">Run check</button>
+              <button class="btn btn-hint" onclick="hint(5,1)">Hint</button>
+              <button class="btn btn-reset" onclick="resetEx(5,1)">Reset</button>
+            </div>
+            <div class="result" id="result-5-1"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================== -->
+      <!-- LESSON 6 — Error handling                               -->
+      <!-- ====================================================== -->
+      <div class="lesson" id="lesson-6">
+        <h2 class="lesson-title">Error handling</h2>
+        <p class="lesson-desc">Express auto-catches synchronous errors but not async rejections (in v4). Wrap async
+          handlers, use <code>try / catch</code>, and forward to a central error middleware via <code>next(err)</code>.</p>
+
+        <div class="concept">
+          <div class="concept-header"><span class="lang-badge">TS</span>
+            <div class="concept-title">try / catch in an async route</div>
+          </div>
+          <pre class="code-block">app.get("/users/:id", async (req, res, next) =&gt; {
+  try {
+    const user = await db.findUser(req.params.id);
+    if (!user) {
+      throw Object.assign(new Error("not found"), { status: 404 });
+    }
+    res.json(user);
+  } catch (err) {
+    next(err); // forward to error middleware
+  }
+});</pre>
+        </div>
+
+        <div class="concept">
+          <div class="concept-header"><span class="lang-badge">TS</span>
+            <div class="concept-title">Reusable async wrapper</div>
+          </div>
+          <pre class="code-block">// Wrap an async handler so rejections always reach next(err)
+const asyncHandler = (fn) =&gt; (req, res, next) =&gt;
+  Promise.resolve(fn(req, res, next)).catch(next);
+
+app.get("/users", asyncHandler(async (req, res) =&gt; {
+  const users = await db.listUsers();
+  res.json(users);
+}));</pre>
+        </div>
+
+        <div class="note warn">
+          <div class="note-icon">!</div>
+          <div>Express 5 forwards async errors automatically. Until your project is on v5, write
+            <code>try / catch</code> or use <code>asyncHandler</code>.</div>
+        </div>
+
+        <div class="exercise" id="ex-6-0">
+          <div class="ex-header">
+            <div class="ex-title"><span class="ex-badge medium">medium</span>Exercise 1 — asyncHandler</div>
+          </div>
+          <div class="ex-body">
+            <p class="ex-desc">Write the <code>asyncHandler</code> wrapper: given an async <code>fn</code>, return an
+              Express handler that invokes it and forwards any rejection to <code>next</code>.</p>
+            <div class="editor">
+              <div class="editor-tab"><span class="editor-dot" style="background: #f25757"></span><span
+                  class="editor-dot" style="background: #f5a623"></span><span class="editor-dot"
+                  style="background: #3dd68c"></span>&nbsp;exercise-1.ts</div>
+              <textarea class="code-input" id="code-6-0" spellcheck="false" rows="3">const asyncHandler = (fn) =&gt; /* your code here */;</textarea>
+            </div>
+            <div class="ex-actions">
+              <button class="btn btn-run" onclick="check(6,0)">Run check</button>
+              <button class="btn btn-hint" onclick="hint(6,0)">Hint</button>
+              <button class="btn btn-reset" onclick="resetEx(6,0)">Reset</button>
+            </div>
+            <div class="result" id="result-6-0"></div>
+          </div>
+        </div>
+
+        <div class="exercise" id="ex-6-1">
+          <div class="ex-header">
+            <div class="ex-title"><span class="ex-badge hard">hard</span>Exercise 2 — Central error handler</div>
+          </div>
+          <div class="ex-body">
+            <p class="ex-desc">Write a final error middleware that responds with <code>{ error: err.message }</code>
+              and uses <code>err.status</code> if present, otherwise <code>500</code>.</p>
+            <div class="editor">
+              <div class="editor-tab"><span class="editor-dot" style="background: #f25757"></span><span
+                  class="editor-dot" style="background: #f5a623"></span><span class="editor-dot"
+                  style="background: #3dd68c"></span>&nbsp;exercise-2.ts</div>
+              <textarea class="code-input" id="code-6-1" spellcheck="false" rows="4">app.use((err, req, res, next) =&gt; {
+  // your code here
+});</textarea>
+            </div>
+            <div class="ex-actions">
+              <button class="btn btn-run" onclick="check(6,1)">Run check</button>
+              <button class="btn btn-hint" onclick="hint(6,1)">Hint</button>
+              <button class="btn btn-reset" onclick="resetEx(6,1)">Reset</button>
+            </div>
+            <div class="result" id="result-6-1"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================== -->
+      <!-- LESSON 7 — Controllers & services (NestJS bridge)       -->
+      <!-- ====================================================== -->
+      <div class="lesson" id="lesson-7">
+        <h2 class="lesson-title">Controllers &amp; services — NestJS preview</h2>
+        <p class="lesson-desc">Once your app grows, separate route definitions (controllers) from business logic
+          (services). This is exactly how NestJS structures everything — same idea, just without decorators.</p>
+
+        <div class="concept">
+          <div class="concept-header"><span class="lang-badge">TS</span>
+            <div class="concept-title">Service holds the logic</div>
+          </div>
+          <pre class="code-block">interface CreateUserDto { name: string; email: string; }
+interface User extends CreateUserDto { id: number; }
+
+class UsersService {
+  private users: User[] = [];
+
+  list(): User[] {
+    return this.users;
+  }
+
+  create(dto: CreateUserDto): User {
+    const user: User = { id: Date.now(), ...dto };
+    this.users.push(user);
+    return user;
+  }
+}</pre>
+        </div>
+
+        <div class="concept">
+          <div class="concept-header"><span class="lang-badge">TS</span>
+            <div class="concept-title">Controller wires HTTP to the service</div>
+          </div>
+          <pre class="code-block">import { Router } from "express";
+
+export function createUsersController(service: UsersService) {
+  const router = Router();
+
+  router.get("/", (req, res) =&gt; {
+    res.json(service.list());
+  });
+
+  router.post("/", (req, res) =&gt; {
+    const user = service.create(req.body);
+    res.status(201).json(user);
+  });
+
+  return router;
+}
+
+// app.ts
+app.use("/api/users", createUsersController(new UsersService()));</pre>
+        </div>
+
+        <div class="note">
+          <div class="note-icon">i</div>
+          <div>In NestJS the controller and service become classes annotated with <code>@Controller</code> and
+            <code>@Injectable</code>, and the framework wires them via dependency injection. The shape is identical —
+            thin controllers, fat services.</div>
+        </div>
+
+        <div class="exercise" id="ex-7-0">
+          <div class="ex-header">
+            <div class="ex-title"><span class="ex-badge medium">medium</span>Exercise 1 — TasksService</div>
+          </div>
+          <div class="ex-body">
+            <p class="ex-desc">Build a <code>TasksService</code> class with a <code>private</code> <code>tasks</code>
+              array and two methods: <code>list()</code> returning all tasks, and <code>add(task)</code> that pushes
+              and returns the task.</p>
+            <div class="editor">
+              <div class="editor-tab"><span class="editor-dot" style="background: #f25757"></span><span
+                  class="editor-dot" style="background: #f5a623"></span><span class="editor-dot"
+                  style="background: #3dd68c"></span>&nbsp;tasks.service.ts</div>
+              <textarea class="code-input" id="code-7-0" spellcheck="false" rows="8">interface Task { id: number; title: string; }
+
+class TasksService {
+  // your code here
+}</textarea>
+            </div>
+            <div class="ex-actions">
+              <button class="btn btn-run" onclick="check(7,0)">Run check</button>
+              <button class="btn btn-hint" onclick="hint(7,0)">Hint</button>
+              <button class="btn btn-reset" onclick="resetEx(7,0)">Reset</button>
+            </div>
+            <div class="result" id="result-7-0"></div>
+          </div>
+        </div>
+
+        <div class="exercise" id="ex-7-1">
+          <div class="ex-header">
+            <div class="ex-title"><span class="ex-badge hard">hard</span>Exercise 2 — TasksController</div>
+          </div>
+          <div class="ex-body">
+            <p class="ex-desc">Write <code>createTasksController(service)</code> that returns a <code>Router</code>
+              with <code>GET /</code> returning <code>service.list()</code> and <code>POST /</code> calling
+              <code>service.add(req.body)</code> and responding with status <code>201</code>.</p>
+            <div class="editor">
+              <div class="editor-tab"><span class="editor-dot" style="background: #f25757"></span><span
+                  class="editor-dot" style="background: #f5a623"></span><span class="editor-dot"
+                  style="background: #3dd68c"></span>&nbsp;tasks.controller.ts</div>
+              <textarea class="code-input" id="code-7-1" spellcheck="false" rows="10">import { Router } from "express";
+
+export function createTasksController(service: TasksService) {
+  const router = Router();
+
+  // your routes here
+
+  return router;
+}</textarea>
+            </div>
+            <div class="ex-actions">
+              <button class="btn btn-run" onclick="check(7,1)">Run check</button>
+              <button class="btn btn-hint" onclick="hint(7,1)">Hint</button>
+              <button class="btn btn-reset" onclick="resetEx(7,1)">Reset</button>
+            </div>
+            <div class="result" id="result-7-1"></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <footer class="nav-footer">
+      <button class="btn-nav" id="btn-prev" onclick="prevLesson()" disabled>← Previous</button>
+      <span class="lesson-count" id="lesson-count">1 / 8</span>
+      <button class="btn-nav primary" id="btn-next" onclick="nextLesson()">Next →</button>
+    </footer>
+  </main>
+</div>
+
+<script>
+  // ----- Lesson navigation state -----
+  const TOTAL = 8;
+  let current = 0;
+  const done = new Set();
+
+  const breadcrumbs = [
+    "first server",
+    "routing",
+    "middleware",
+    "request & response",
+    "body & validation",
+    "router & modules",
+    "error handling",
+    "controllers & services",
+  ];
+  const lessonExerciseCounts = [2, 3, 3, 3, 2, 2, 2, 2];
+  const TOTAL_EXERCISES = lessonExerciseCounts.reduce((a, n) => a + n, 0);
+
+  // ----- TypeScript syntax highlighter (shared with TS course) -----
+  const TS_KEYWORDS = new Set([
+    "let", "const", "var", "function", "class", "interface", "type", "enum",
+    "extends", "implements", "return", "if", "else", "for", "while", "do",
+    "switch", "case", "break", "continue", "async", "await", "try", "catch",
+    "finally", "throw", "new", "this", "super", "typeof", "instanceof",
+    "public", "private", "protected", "readonly", "static", "abstract",
+    "import", "from", "export", "default", "as", "in", "of"
+  ]);
+  const TS_PRIM_TYPES = new Set([
+    "string", "number", "boolean", "any", "unknown", "void", "never",
+    "object", "bigint", "symbol"
+  ]);
+  const TS_BUILTIN_TYPES = new Set([
+    "Date", "Promise", "Array", "Map", "Set", "Record", "Partial", "Readonly",
+    "Pick", "Omit", "Required", "Error", "Object"
+  ]);
+  const TS_BOOLS = new Set(["true", "false", "null", "undefined"]);
+
+  function highlightTS(rawHtml) {
+    const txt = decodeEntities(rawHtml);
+    const tokens = [];
+    let i = 0;
+    const n = txt.length;
+
+    function isIdStart(c) { return /[A-Za-z_$]/.test(c); }
+    function isIdPart(c) { return /[A-Za-z0-9_$]/.test(c); }
+
+    while (i < n) {
+      const c = txt[i];
+
+      if (c === "/" && txt[i + 1] === "/") {
+        let j = i;
+        while (j < n && txt[j] !== "\n") j++;
+        tokens.push({ t: "cm", v: txt.slice(i, j) });
+        i = j;
+        continue;
+      }
+      if (c === "/" && txt[i + 1] === "*") {
+        let j = i + 2;
+        while (j < n && !(txt[j] === "*" && txt[j + 1] === "/")) j++;
+        j = Math.min(n, j + 2);
+        tokens.push({ t: "cm", v: txt.slice(i, j) });
+        i = j;
+        continue;
+      }
+      if (c === '"' || c === "'") {
+        const quote = c;
+        let j = i + 1;
+        while (j < n && txt[j] !== quote) {
+          if (txt[j] === "\\") j += 2; else j++;
+        }
+        j = Math.min(n, j + 1);
+        tokens.push({ t: "str", v: txt.slice(i, j) });
+        i = j;
+        continue;
+      }
+      if (c === "`") {
+        let j = i + 1;
+        let buf = "`";
+        while (j < n && txt[j] !== "`") {
+          if (txt[j] === "\\") { buf += txt[j] + (txt[j + 1] || ""); j += 2; continue; }
+          if (txt[j] === "$" && txt[j + 1] === "{") {
+            tokens.push({ t: "str", v: buf });
+            buf = "";
+            let k = j + 2;
+            let depth = 1;
+            while (k < n && depth > 0) {
+              if (txt[k] === "{") depth++;
+              else if (txt[k] === "}") depth--;
+              if (depth > 0) k++;
+            }
+            tokens.push({ t: "raw", v: txt.slice(j, Math.min(n, k + 1)) });
+            j = k + 1;
+            continue;
+          }
+          buf += txt[j];
+          j++;
+        }
+        buf += "`";
+        tokens.push({ t: "str", v: buf });
+        i = Math.min(n, j + 1);
+        continue;
+      }
+      if (/[0-9]/.test(c)) {
+        let j = i;
+        while (j < n && /[0-9.]/.test(txt[j])) j++;
+        tokens.push({ t: "num", v: txt.slice(i, j) });
+        i = j;
+        continue;
+      }
+      if (c === "@" && isIdStart(txt[i + 1] || "")) {
+        let j = i + 1;
+        while (j < n && isIdPart(txt[j])) j++;
+        tokens.push({ t: "dec", v: txt.slice(i, j) });
+        i = j;
+        continue;
+      }
+      if (isIdStart(c)) {
+        let j = i;
+        while (j < n && isIdPart(txt[j])) j++;
+        const word = txt.slice(i, j);
+        let cls = null;
+        if (TS_KEYWORDS.has(word)) cls = "kw";
+        else if (TS_BOOLS.has(word)) cls = "bool";
+        else if (TS_PRIM_TYPES.has(word)) cls = "ty";
+        else if (TS_BUILTIN_TYPES.has(word)) cls = "ty";
+        else if (/^[A-Z]/.test(word)) cls = "iface";
+        else {
+          let k = j;
+          while (k < n && /\s/.test(txt[k])) k++;
+          if (txt[k] === "(") cls = "fn";
+        }
+        tokens.push({ t: cls || "raw", v: word });
+        i = j;
+        continue;
+      }
+      tokens.push({ t: "raw", v: c });
+      i++;
+    }
+
+    return tokens.map((tok) => {
+      const safe = encodeEntities(tok.v);
+      if (tok.t === "raw") return safe;
+      return `<span class="tok-${tok.t}">${safe}</span>`;
+    }).join("");
+  }
+
+  function encodeEntities(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function decodeEntities(s) {
+    return s
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&amp;/g, "&");
+  }
+
+  function applyHighlighting() {
+    document.querySelectorAll("pre.code-block").forEach((el) => {
+      el.innerHTML = highlightTS(el.innerHTML);
+    });
+  }
+
+  function normalizeTextareas() {
+    document.querySelectorAll("textarea.code-input").forEach((t) => {
+      if (t.value.startsWith("\n")) t.value = t.value.slice(1);
+      t.value = t.value.replace(/\s+$/, "");
+    });
+  }
+
+  // ----- Hints and answer checks -----
+  const hints = {
+    "0-0": 'app.get("/", (req, res) => res.send("Hello, Express!")); app.listen(3000);',
+    "0-1": 'app.get("/status", (req, res) => res.json({ ok: true })); app.get("/teapot", (req, res) => res.status(418).json({ error: "I\'m a teapot" }));',
+    "1-0": 'app.get("/products", (req, res) => res.json([])); app.post("/products", (req, res) => res.status(201).json({ id: 1 }));',
+    "1-1": 'const id = Number(req.params.id); res.json({ orderId: id });',
+    "1-2": 'const q = req.query.q; if (!q) return res.status(400).json({ error: "q required" }); res.json({ q, results: [] });',
+    "2-0": 'console.log(req.method, req.url); next();',
+    "2-1": 'app.use("/admin", auth); app.get("/admin/dashboard", (req, res) => res.json({ ok: true }));',
+    "2-2": 'res.status(err.status ?? 500).json({ message: err.message });',
+    "3-0": 'if (req.params.id === "0") return res.status(404).json({ error: "not found" }); res.status(200).json({ id: req.params.id });',
+    "3-1": 'const { userId } = req.params; const { source } = req.query; const { item } = req.body; res.json({ userId, source, item });',
+    "3-2": 'res.set("X-Redirected", "yes"); res.redirect("/");',
+    "4-0": 'app.use(express.json()); app.post("/tasks", (req, res) => res.status(201).json(req.body));',
+    "4-1": 'if (typeof email !== "string" || !email.includes("@")) return res.status(400).json({ error: "invalid email" }); if (typeof password !== "string" || password.length < 8) return res.status(400).json({ error: "invalid password" }); res.status(201).json({ email });',
+    "5-0": 'productsRouter.get("/", ...); productsRouter.get("/:id", ...); productsRouter.post("/", ...);',
+    "5-1": 'app.use(express.json()); app.use("/api/products", productsRouter);',
+    "6-0": '(req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)',
+    "6-1": 'res.status(err.status ?? 500).json({ error: err.message });',
+    "7-0": 'private tasks: Task[] = []; list(): Task[] { return this.tasks; } add(task: Task): Task { this.tasks.push(task); return task; }',
+    "7-1": 'router.get("/", (req, res) => res.json(service.list())); router.post("/", (req, res) => res.status(201).json(service.add(req.body)));',
+  };
+
+  const checks = {
+    "0-0": (c) =>
+      /express\s*\(\s*\)/.test(c) &&
+      /app\.get\s*\(\s*["']\/["']/.test(c) &&
+      /Hello,\s*Express!/.test(c) &&
+      /app\.listen\s*\(\s*3000/.test(c),
+    "0-1": (c) =>
+      /app\.get\s*\(\s*["']\/status["']/.test(c) &&
+      /res\.json\s*\(\s*\{[^}]*ok\s*:\s*true/.test(c) &&
+      /app\.get\s*\(\s*["']\/teapot["']/.test(c) &&
+      /res\.status\s*\(\s*418\s*\)/.test(c) &&
+      /teapot/i.test(c),
+    "1-0": (c) =>
+      /app\.get\s*\(\s*["']\/products["']/.test(c) &&
+      /res\.json\s*\(\s*\[\s*\]\s*\)/.test(c) &&
+      /app\.post\s*\(\s*["']\/products["']/.test(c) &&
+      /res\.status\s*\(\s*201\s*\)/.test(c) &&
+      /id\s*:\s*1/.test(c),
+    "1-1": (c) =>
+      /req\.params\.id/.test(c) &&
+      /(Number\s*\(|parseInt\s*\()/.test(c) &&
+      /orderId\s*:/.test(c) &&
+      /res\.json/.test(c),
+    "1-2": (c) =>
+      /req\.query\.q/.test(c) &&
+      /res\.status\s*\(\s*400\s*\)/.test(c) &&
+      /q\s+required/i.test(c) &&
+      /results\s*:\s*\[\s*\]/.test(c),
+    "2-0": (c) =>
+      /req\.method/.test(c) &&
+      /req\.(url|path)/.test(c) &&
+      /console\.log/.test(c) &&
+      /next\s*\(\s*\)/.test(c),
+    "2-1": (c) =>
+      /app\.use\s*\(\s*["']\/admin["']\s*,\s*auth/.test(c) &&
+      /app\.get\s*\(\s*["']\/admin\/dashboard["']/.test(c) &&
+      /ok\s*:\s*true/.test(c),
+    "2-2": (c) =>
+      /\(\s*err\s*,\s*req\s*,\s*res\s*,\s*next\s*\)/.test(c) &&
+      /res\.status\s*\(/.test(c) &&
+      /err\.status/.test(c) &&
+      /err\.message/.test(c),
+    "3-0": (c) =>
+      /req\.params\.id/.test(c) &&
+      /["']0["']/.test(c) &&
+      /res\.status\s*\(\s*404\s*\)/.test(c) &&
+      /not\s+found/i.test(c) &&
+      /res\.(status\s*\(\s*200\s*\)\s*\.)?json/.test(c),
+    "3-1": (c) =>
+      /req\.params/.test(c) &&
+      /req\.query/.test(c) &&
+      /req\.body/.test(c) &&
+      /userId/.test(c) && /source/.test(c) && /item/.test(c) &&
+      /res\.json/.test(c),
+    "3-2": (c) =>
+      /res\.(set|setHeader|header)\s*\(/.test(c) &&
+      /X-Redirected/i.test(c) &&
+      /res\.redirect\s*\(\s*["']\/["']\s*\)/.test(c),
+    "4-0": (c) =>
+      /app\.use\s*\(\s*express\.json\s*\(\s*\)\s*\)/.test(c) &&
+      /app\.post\s*\(\s*["']\/tasks["']/.test(c) &&
+      /res\.status\s*\(\s*201\s*\)/.test(c) &&
+      /req\.body/.test(c),
+    "4-1": (c) =>
+      /req\.body/.test(c) &&
+      /res\.status\s*\(\s*400\s*\)/.test(c) &&
+      /(email\.includes\s*\(\s*["']@["']\s*\)|["']@["'][^]*email|email[^]*["']@["'])/.test(c) &&
+      /password[^]*length|length[^]*password/.test(c) &&
+      /8/.test(c) &&
+      /res\.status\s*\(\s*201\s*\)/.test(c),
+    "5-0": (c) =>
+      /productsRouter\.get\s*\(\s*["']\/["']/.test(c) &&
+      /productsRouter\.get\s*\(\s*["']\/:id["']/.test(c) &&
+      /productsRouter\.post\s*\(\s*["']\/["']/.test(c) &&
+      /res\.status\s*\(\s*201\s*\)/.test(c),
+    "5-1": (c) =>
+      /app\.use\s*\(\s*express\.json\s*\(\s*\)\s*\)/.test(c) &&
+      /app\.use\s*\(\s*["']\/api\/products["']\s*,\s*productsRouter\s*\)/.test(c),
+    "6-0": (c) =>
+      /\(\s*req\s*,\s*res\s*,\s*next\s*\)/.test(c) &&
+      /fn\s*\(/.test(c) &&
+      /\.catch\s*\(\s*next\s*\)/.test(c),
+    "6-1": (c) =>
+      /res\.status\s*\(/.test(c) &&
+      /err\.status/.test(c) &&
+      /err\.message/.test(c) &&
+      /error\s*:/.test(c),
+    "7-0": (c) =>
+      /class\s+TasksService/.test(c) &&
+      /private\s+tasks/.test(c) &&
+      /list\s*\(\s*\)/.test(c) &&
+      /add\s*\(/.test(c) &&
+      /this\.tasks\.push\s*\(/.test(c),
+    "7-1": (c) =>
+      /router\.get\s*\(\s*["']\/["']/.test(c) &&
+      /service\.list\s*\(\s*\)/.test(c) &&
+      /router\.post\s*\(\s*["']\/["']/.test(c) &&
+      /service\.add\s*\(\s*req\.body\s*\)/.test(c) &&
+      /res\.status\s*\(\s*201\s*\)/.test(c),
+  };
+
+  const defaults = {};
+
+  function check(lesson, ex) {
+    const key = lesson + "-" + ex;
+    const code = document.getElementById("code-" + key).value;
+    const el = document.getElementById("result-" + key);
+    const pass = checks[key] && checks[key](code);
+    el.className = "result " + (pass ? "pass" : "fail");
+    el.textContent = pass
+      ? "✓ Looks good — Express wired up correctly."
+      : "✗ Not quite — re-read the concept and try again.";
+    if (pass) { done.add(key); updateProgress(); }
+  }
+
+  function hint(lesson, ex) {
+    const key = lesson + "-" + ex;
+    const el = document.getElementById("result-" + key);
+    el.className = "result hint-shown";
+    el.textContent = "Hint: " + (hints[key] || "Review the concept above.");
+  }
+
+  function resetEx(lesson, ex) {
+    const key = lesson + "-" + ex;
+    document.getElementById("code-" + key).value = defaults["code-" + key] || "";
+    const el = document.getElementById("result-" + key);
+    el.className = "result";
+    el.textContent = "";
+  }
+
+  function updateProgress() {
+    const count = done.size;
+    document.getElementById("prog-label").textContent = count + " / " + TOTAL_EXERCISES + " done";
+    document.getElementById("prog-fill").style.width = Math.round((count / TOTAL_EXERCISES) * 100) + "%";
+    lessonExerciseCounts.forEach((exerciseCount, lessonIndex) => {
+      let completed = 0;
+      for (let exIndex = 0; exIndex < exerciseCount; exIndex++) {
+        if (done.has(lessonIndex + "-" + exIndex)) completed++;
+      }
+      const navItem = document.getElementById("nav-" + lessonIndex);
+      if (navItem) navItem.classList.toggle("done", completed === exerciseCount);
+    });
+  }
+
+  function goTo(n) {
+    document.querySelectorAll(".lesson").forEach((l, i) => l.classList.toggle("active", i === n));
+    document.querySelectorAll(".nav-item").forEach((ni, i) => ni.classList.toggle("active", i === n));
+    document.getElementById("bc-title").textContent = breadcrumbs[n];
+    document.getElementById("lesson-count").textContent = (n + 1) + " / " + TOTAL;
+    document.getElementById("btn-prev").disabled = n === 0;
+    document.getElementById("btn-next").textContent = n === TOTAL - 1 ? "Finish" : "Next →";
+    current = n;
+    document.querySelector(".content").scrollTop = 0;
+  }
+
+  function nextLesson() { if (current < TOTAL - 1) goTo(current + 1); }
+  function prevLesson() { if (current > 0) goTo(current - 1); }
+
+  normalizeTextareas();
+  applyHighlighting();
+  document.querySelectorAll("textarea.code-input").forEach((t) => { defaults[t.id] = t.value; });
+  goTo(0);
+</script>
